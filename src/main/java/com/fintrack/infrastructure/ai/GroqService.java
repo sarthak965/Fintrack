@@ -1,7 +1,6 @@
 package com.fintrack.infrastructure.ai;
 
 import com.google.gson.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.net.URI;
@@ -9,13 +8,12 @@ import java.net.http.*;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
-public class GeminiService {
+public class GroqService {
 
-    @Value("${gemini.api.key}")
+    @Value("${groq.api.key}")
     private String apiKey;
 
-    @Value("${gemini.api.url}")
+    @Value("${groq.api.url}")
     private String apiUrl;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -24,28 +22,34 @@ public class GeminiService {
     public String generateContent(String prompt) {
         try {
             Map<String, Object> body = new HashMap<>();
-            Map<String, Object> content = new HashMap<>();
-            Map<String, Object> part = new HashMap<>();
-            part.put("text", prompt);
-            content.put("parts", List.of(part));
-            body.put("contents", List.of(content));
+            body.put("model", "llama-3.1-8b-instant");
+            body.put("messages", List.of(Map.of("role", "user", "content", prompt)));
+            body.put("max_tokens", 1024);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl + "?key=" + apiKey))
+                    .uri(URI.create(apiUrl))
                     .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + apiKey)
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(body)))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Groq raw response: " + response.body());
+
             JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
-            return json.getAsJsonArray("candidates")
+
+            if (json.has("error")) {
+                return "Groq error: " + json.getAsJsonObject("error").get("message").getAsString();
+            }
+
+            return json.getAsJsonArray("choices")
                     .get(0).getAsJsonObject()
-                    .getAsJsonObject("content")
-                    .getAsJsonArray("parts")
-                    .get(0).getAsJsonObject()
-                    .get("text").getAsString();
+                    .getAsJsonObject("message")
+                    .get("content").getAsString();
+
         } catch (Exception e) {
-            return "AI service temporarily unavailable: " + e.getMessage();
+            return "AI service error: " + e.getMessage();
         }
     }
 }

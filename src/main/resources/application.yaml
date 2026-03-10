@@ -2,6 +2,8 @@ spring:
   application:
     name: fintrack-backend
 
+  config:
+    import: optional:classpath:application-secrets.yaml
   datasource:
     url: jdbc:postgresql://localhost:5433/fintrack?TimeZone=UTC
     username: fintrack_user
@@ -43,7 +45,3 @@ application:
       access-token-expiration: 900000
       refresh-token-expiration: 604800000
 
-gemini:
-  api:
-    key: AIzaSyCc-wxbx6erRJczZw0x4RsmvSFyd1DZfSc
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent

@@ -5,7 +5,7 @@ import com.fintrack.domain.model.User;
 import com.fintrack.domain.repository.TransactionRepository;
 import com.fintrack.domain.repository.UserRepository;
 import com.fintrack.domain.exception.UserNotFoundException;
-import com.fintrack.infrastructure.ai.GeminiService;
+import com.fintrack.infrastructure.ai.GroqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AIFinanceService {
 
-    private final GeminiService geminiService;
+    private final GroqService geminiService;
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
 

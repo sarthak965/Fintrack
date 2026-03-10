@@ -16,4 +16,10 @@ public interface JpaTransactionRepository extends JpaRepository<Transaction, Lon
 
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.user.id = :userId AND t.type = 'EXPENSE'")
     BigDecimal sumExpensesByUserId(Long userId);
+
+    @Query("SELECT COALESCE(AVG(t.amount), 0) FROM Transaction t WHERE t.user.id = :userId AND t.category = :category AND t.type = 'EXPENSE'")
+    BigDecimal avgExpenseByUserIdAndCategory(Long userId, String category);
+
+    @Query("SELECT COUNT(t) FROM Transaction t WHERE t.user.id = :userId AND t.category = :category AND t.type = 'EXPENSE'")
+    Long countByUserIdAndCategory(Long userId, String category);
 }

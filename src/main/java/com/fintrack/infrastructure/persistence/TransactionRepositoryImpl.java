@@ -21,4 +21,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override public List<Transaction> findByUserIdAndCategory(Long userId, String category) { return jpa.findByUserIdAndCategory(userId, category); }
     @Override public BigDecimal sumExpensesByUserId(Long userId) { return jpa.sumExpensesByUserId(userId); }
     @Override public void deleteById(Long id) { jpa.deleteById(id); }
+    @Override public BigDecimal avgExpenseByUserIdAndCategory(Long userId, String category) { return jpa.avgExpenseByUserIdAndCategory(userId, category);}
+    @Override public Long countByUserIdAndCategory(Long userId, String category) { return jpa.countByUserIdAndCategory(userId, category);}
 }

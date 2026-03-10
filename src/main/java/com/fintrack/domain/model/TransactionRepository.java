@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionRepository {
+    BigDecimal avgExpenseByUserIdAndCategory(Long userId, String category);
+    Long countByUserIdAndCategory(Long userId, String category);
     Transaction save(Transaction transaction);
     Optional<Transaction> findById(Long id);
     List<Transaction> findByUserId(Long userId);

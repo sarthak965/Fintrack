@@ -10,7 +10,7 @@ public class TransactionRequest {
     @NotNull @Positive
     private BigDecimal amount;
 
-    @NotBlank
+
     private String category;
 
     @NotBlank
